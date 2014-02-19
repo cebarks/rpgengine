@@ -2,11 +2,8 @@ package net.cebarks.engine.util;
 
 import java.util.Random;
 
-@SuppressWarnings("serial")
 public class XSRandom extends Random {
-	/**
-	 *
-	 */
+
 	private static final long serialVersionUID = 1273864162608516207L;
 	private long seed;
 

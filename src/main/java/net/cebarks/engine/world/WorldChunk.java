@@ -56,4 +56,6 @@ public class WorldChunk implements Externalizable {
 	public int getTileID(int i, int j) {
 		return getTile(i, j).id;
 	}
+	
+	
 }

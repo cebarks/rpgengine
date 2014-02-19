@@ -1,7 +1,6 @@
 package net.cebarks.engine;
 
 import java.util.Random;
-import java.util.logging.Logger;
 
 import net.cebarks.engine.util.XSRandom;
 
@@ -41,7 +40,7 @@ public abstract class Game {
 		return wrapper.getFPS();
 	}
 
-	public Logger getLogger() {
-		return Logger.getGlobal();
+	public double getDelta() {
+		return wrapper.getDelta();
 	}
 }
