@@ -3,7 +3,6 @@ package net.cebarks.engine.util;
 import org.lwjgl.Sys;
 
 public class Time {
-
 	public static long curTime;
 	public static long lastTime;
 
@@ -12,7 +11,7 @@ public class Time {
 	}
 
 	public static long getDelta() {
-		return curTime - lastTime;
+		return (curTime - lastTime);
 	}
 
 	public static void updateTime() {

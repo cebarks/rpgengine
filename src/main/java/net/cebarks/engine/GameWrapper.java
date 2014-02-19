@@ -1,9 +1,8 @@
 package net.cebarks.engine;
 
-import java.util.logging.Logger;
+import net.cebarks.engine.util.Time;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -14,35 +13,24 @@ public class GameWrapper implements Runnable {
 
 	private boolean running;
 	private Game game;
-	private long lastFrame;
 	private long lastFPS;
 	private int fps;
 	private int frames;
 	private int targetFPS;
+	private int targetTPS;
 
 	public GameWrapper(Game game) {
 		this.game = game;
 		game.setGameWrapper(this);
 		targetFPS = -1;
+		targetTPS = 60;
 	}
 
-	public void setWindowSize(int x, int y) {
-		try {
-			Display.setDisplayMode(new DisplayMode(x, y));
-		} catch (LWJGLException e) {
-			Logger.getGlobal().severe(e.getMessage());
-		}
-	}
-
-	public void setTargetFPS(int fps) {
-		targetFPS = fps;
-	}
-
-	@Override
 	public void run() {
 		initGL();
 
-		lastFPS = getTime();
+		Time.init();
+		lastFPS = Time.getTime();
 		updateFPS();
 		game.init(this);
 
@@ -62,6 +50,7 @@ public class GameWrapper implements Runnable {
 	}
 
 	public void update() {
+		Time.updateTime();
 		game.update(getDelta());
 		updateFPS();
 		if (Display.isCloseRequested())
@@ -81,7 +70,7 @@ public class GameWrapper implements Runnable {
 			Display.setDisplayMode(new DisplayMode(800, 600));
 			Display.create();
 		} catch (LWJGLException e) {
-			Logger.getGlobal().severe("Couldn't instansiate the Display: " + e.getMessage());
+			System.out.println("Couldn't instansiate the Display: " + e.getMessage());
 			System.exit(1);
 		}
 
@@ -101,14 +90,11 @@ public class GameWrapper implements Runnable {
 	}
 
 	public double getDelta() {
-		long time = getTime();
-		double delta = (time - lastFrame);
-		lastFrame = time;
-		return delta / 15;
+		return Time.getDelta() / (1000D / targetTPS);
 	}
 
 	public long getTime() {
-		return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+		return Time.getTime();
 	}
 
 	private void updateFPS() {
@@ -122,6 +108,22 @@ public class GameWrapper implements Runnable {
 
 	public int getFPS() {
 		return fps;
+	}
+
+	public void setWindowSize(int x, int y) {
+		try {
+			Display.setDisplayMode(new DisplayMode(x, y));
+		} catch (LWJGLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public void setTargetFPS(int fps) {
+		targetFPS = fps;
+	}
+
+	public void setTargetTPS(int tps) {
+		targetTPS = tps;
 	}
 
 	public void setVsync(boolean vsync) {
