@@ -3,6 +3,9 @@ package net.cebarks.engine.world.tile;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.cebarks.engine.gfx.Animation;
+import net.cebarks.engine.gfx.TileAnimation;
+
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
@@ -34,7 +37,6 @@ public class Tile {
 	public void render(int x, int y) {
 		GL11.glBegin(GL11.GL_QUADS);
 		{
-			getTexture().bind();
 			GL11.glTexCoord2f(0, 0);
 			GL11.glVertex2f(0, 0);
 			GL11.glTexCoord2f(1, 0);
@@ -47,7 +49,7 @@ public class Tile {
 		GL11.glEnd();
 	}
 
-	public Texture getTexture() {
+	public TileAnimation getAnimation() {
 		return null;
 	}
 }

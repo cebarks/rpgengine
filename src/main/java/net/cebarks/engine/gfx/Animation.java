@@ -2,48 +2,56 @@ package net.cebarks.engine.gfx;
 
 import java.util.ArrayList;
 
+import net.cebarks.engine.util.Delay;
+
 public class Animation {
 
-	private ArrayList<Frame> frames;
-	private int index;
+	protected ArrayList<Frame> frames;
+	protected int index;
+	private Delay delay;
 
 	public Animation() {
 		frames = new ArrayList<Frame>();
+		delay = new Delay(0);
 	}
 
-	public void addFrame(String spriteLocation, int length) {
+	public Animation addFrame(String spriteLocation, int length) {
 		frames.add(new Frame(new Sprite(spriteLocation), length));
+		return this;
 	}
 
-	public void addFrame(String sprite) {
+	public Animation addFrame(String sprite) {
 		addFrame(sprite, 30);
+		return this;
 	}
 
 	public void render(float x, float y) {
-		if (frames.get(index).render(x, y))
+		if (delay.over()) {
 			index++;
+			if (index >= frames.size()) {
+				index = 0;
+			}
+			delay = new Delay(frames.get(index).getLength());
+		}
+
+		frames.get(index).render(x, y);
 	}
 }
 
 class Frame {
 	private Sprite sprite;
-
 	private int length;
-	private int curLength;
 
 	public Frame(Sprite sprite2, int length) {
 		sprite = sprite2;
 		this.length = length;
 	}
 
-	public boolean render(float x, float y) {
-		if (curLength >= length) {
-			curLength = 0;
-			return true;
-		}
-
+	public void render(float x, float y) {
 		sprite.render(x, y);
-		curLength++;
-		return false;
+	}
+
+	public int getLength() {
+		return length;
 	}
 }
