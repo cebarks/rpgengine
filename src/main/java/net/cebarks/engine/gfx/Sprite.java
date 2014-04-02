@@ -2,10 +2,10 @@ package net.cebarks.engine.gfx;
 
 import java.io.IOException;
 
+import net.cebarks.engine.util.ResourceLoader;
+import net.cebarks.engine.util.TextureLoader;
+
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
 
 public class Sprite {
 	private Texture texture;
@@ -37,6 +37,7 @@ public class Sprite {
 
 		this.width = width / (1 / scale);
 		this.height = height / (1 / scale);
+		this.scale = scale;
 	}
 
 	protected void render(float x, float y) {

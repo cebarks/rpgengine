@@ -3,11 +3,7 @@ package net.cebarks.engine.world.tile;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.cebarks.engine.gfx.Animation;
 import net.cebarks.engine.gfx.TileAnimation;
-
-import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.Texture;
 
 public class Tile {
 	public final int id;
@@ -22,6 +18,10 @@ public class Tile {
 		tiles.put(id, this);
 	}
 
+	public void update(int i, int j) {
+		
+	}
+
 	public boolean isSolid() {
 		return solid;
 	}
@@ -34,22 +34,11 @@ public class Tile {
 		return tiles.get(id2);
 	}
 
-	public void render(int x, int y) {
-		GL11.glBegin(GL11.GL_QUADS);
-		{
-			GL11.glTexCoord2f(0, 0);
-			GL11.glVertex2f(0, 0);
-			GL11.glTexCoord2f(1, 0);
-			GL11.glVertex2f(32, 0);
-			GL11.glTexCoord2f(1, 1);
-			GL11.glVertex2f(32, 32);
-			GL11.glTexCoord2f(0, 1);
-			GL11.glVertex2f(0, 32);
-		}
-		GL11.glEnd();
-	}
-
 	public TileAnimation getAnimation() {
 		return null;
+	}
+
+	public void render(float x, float y) {
+		getAnimation().render(x * 32, y * 32);
 	}
 }

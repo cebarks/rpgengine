@@ -19,11 +19,14 @@ public class GameWrapper implements Runnable {
 	private int targetFPS;
 	private int targetTPS;
 
-	public GameWrapper(Game game) {
+	public GameWrapper(Game game, int width, int height, boolean fullscreen) {
 		this.game = game;
 		game.setGameWrapper(this);
 		targetFPS = -1;
-		targetTPS = 60;
+	}
+
+	public GameWrapper(Game game) {
+		this(game, 800, 600, false);
 	}
 
 	public void run() {

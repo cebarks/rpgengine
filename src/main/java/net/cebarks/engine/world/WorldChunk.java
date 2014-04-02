@@ -8,54 +8,111 @@ import java.io.ObjectOutput;
 import net.cebarks.engine.world.tile.Tile;
 
 public class WorldChunk implements Externalizable {
-	private WorldStorage worldStorage;
-	private Tile[][] tiles;
+	private Tile[][] background;
+	private Tile[][] midground;
+	private Tile[][] foreground;
 
 	public int x;
 	public int y;
 
-	public WorldChunk(WorldStorage worldStorage) {
-		this.worldStorage = worldStorage;
-		tiles = new Tile[15][15];
+	public WorldChunk(int x, int y) {
+		background = new Tile[16][16];
+		midground = new Tile[16][16];
+		foreground = new Tile[16][16];
 	}
 
-	public void setTile(Tile tile, int x, int y) {
-		tiles[x][y] = tile;
+	public void setTile(Tile tile, EnumWorldLevel level, int x, int y) {
+		switch (level) {
+			case BACKGROUND:
+				background[x][y] = tile;
+			case MIDGROUND:
+				midground[x][y] = tile;
+			case FOREGROUND:
+				foreground[x][y] = tile;
+		}
 	}
 
-	public void setTile(int id, int x, int y) {
-		tiles[x][y] = Tile.getByID(id);
+	public void setTile(int id, EnumWorldLevel level, int x, int y) {
+		setTile(Tile.getByID(id), level, x, y);
 	}
 
-	public WorldStorage getWorldStorage() {
-		return worldStorage;
+	public Tile getTile(EnumWorldLevel level, int i, int j) {
+		switch (level) {
+			default:
+				return null;
+			case BACKGROUND:
+				return background[x][y];
+			case MIDGROUND:
+				return midground[x][y];
+			case FOREGROUND:
+				return foreground[x][y];
+		}
 	}
 
-	@Override
+	public int getTileID(EnumWorldLevel level, int i, int j) {
+		return getTile(level, i, j).id;
+	}
+
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeInt(x);
 		out.writeInt(y);
-		for (int i = 0; i < 16; i++)
-			for (int j = 0; j < 16; j++)
-				out.writeInt(tiles[i][j].id);
+		for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 16; j++) {
+				out.writeInt(background[i][j].id);
+				out.writeInt(midground[i][j].id);
+				out.writeInt(foreground[i][j].id);
+			}
+		}
 	}
 
-	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 		x = in.readInt();
 		y = in.readInt();
-		for (int i = 0; i < 16; i++)
-			for (int j = 0; j < 16; j++)
-				tiles[i][j] = Tile.getByID(in.readInt());
+		for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 16; j++) {
+				background[i][j] = Tile.getByID(in.readInt());
+				midground[i][j] = Tile.getByID(in.readInt());
+				foreground[i][j] = Tile.getByID(in.readInt());
+			}
+		}
 	}
 
-	public Tile getTile(int i, int j) {
-		return tiles[i][j];
+	public void update() {
+		for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 16; j++) {
+				midground[i][j].update(x * i, y * j);
+				foreground[i][j].update(x * i, y * j);
+			}
+		}
 	}
 
-	public int getTileID(int i, int j) {
-		return getTile(i, j).id;
+	public void render() {
+		for (int x = 0; x < 16; x++) {
+			for (int y = 0; y < 16; y++) {
+				// getTile(EnumWorldLevel.BACKGROUND, x, y).render(x * 32, y *
+				// 32);
+				// getTile(EnumWorldLevel.MIDGROUND, x, y).render(x * 32, y *
+				// 32);
+				// getTile(EnumWorldLevel.FOREGROUND, x, y).render(x * 32, y *
+				// 32);
+			}
+		}
 	}
-	
-	
+
+	public void renderBackground() {
+		for (int x = 0; x < 16; x++) {
+			for (int y = 0; y < 16; y++) {
+				getTile(EnumWorldLevel.BACKGROUND, x, y).render(x * 32, y * 32);
+				getTile(EnumWorldLevel.MIDGROUND, x, y).render(x * 32, y * 32);
+			}
+		}
+	}
+
+	public void renderForeground() {
+		for (int x = 0; x < 16; x++) {
+			for (int y = 0; y < 16; y++) {
+				getTile(EnumWorldLevel.FOREGROUND, x, y).render(x * 32, y * 32);
+			}
+		}
+	}
 }
